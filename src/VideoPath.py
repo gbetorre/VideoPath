@@ -1,4 +1,4 @@
-# Replace a path (a substring into a large string) with another
+
 
 import tkinter as tk
 from tkinter import ttk
@@ -160,7 +160,8 @@ root.withdraw()  # Hide the root window
 
 browse_folder()
 '''
-
+# Replace a path (a substring into a large string) with another
+'''
 old_path = input("Digita il percorso dove VideoPad non trova le risorse: ")
 print(f"Il vecchio percorso è: {old_path}")
 new_path = input("Digita il percorso dove si trovano ora le risorse")
@@ -176,4 +177,5 @@ def replace_text_in_file(input_filepath, output_filepath, old_text, new_text):
 
 # Usage example:
 replace_text_in_file('original.txt', 'modified.txt', 'old_word', 'new_word')
+'''
 
