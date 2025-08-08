@@ -138,21 +138,10 @@ root.mainloop()
 
 
 
-
-
-
 '''
 def browse_folder():
     # Open a folder browser dialog and return the selected path
     folder_path = filedialog.askdirectory(title="Select a Folder")
-    if folder_path:
-        print("Selected folder:", folder_path)
-        use_folder_path(folder_path)  # Call your function with folder_path
-
-def use_folder_path(path):
-    # Replace this with your actual function that needs the folder path
-    print(f"Function received folder path: {path}")
-    # Your code here
 
 # Setup minimal Tkinter window (it hides immediately after folder dialog)
 root = tk.Tk()
@@ -160,22 +149,5 @@ root.withdraw()  # Hide the root window
 
 browse_folder()
 '''
-# Replace a path (a substring into a large string) with another
-'''
-old_path = input("Digita il percorso dove VideoPad non trova le risorse: ")
-print(f"Il vecchio percorso è: {old_path}")
-new_path = input("Digita il percorso dove si trovano ora le risorse")
 
-def replace_text_in_file(input_filepath, output_filepath, old_text, new_text):
-    with open(input_filepath, 'r', encoding='utf-8') as infile, \
-         open(output_filepath, 'w', encoding='utf-8') as outfile:
-
-        for line in infile:
-            # Replace old_text with new_text in each line
-            new_line = line.replace(old_text, new_text)
-            outfile.write(new_line)
-
-# Usage example:
-replace_text_in_file('original.txt', 'modified.txt', 'old_word', 'new_word')
-'''
 
