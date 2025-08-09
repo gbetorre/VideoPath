@@ -5,6 +5,11 @@ VideoPath è una semplice utility per migrare con facilità i riferimenti alle r
 # Il problema
 
 VideoPad Video Editor, o VideoPad Professional, &egrave; un'applicazione Windows per l'editing del video digitale con un'interfaccia pulita e facile da utilizzare ma con potenti funzioni di montaggio.
+
+![Esempio di come appare VideoPad](docs/VideoPad interface.png)
+
+***Figure 1. Un esempio di come appare l'interfaccia principale di VideoPad***
+
 Tuttavia, una volta che un progetto &egrave; stato creato, e che quindi sono stati stabiliti i percorsi nel file system delle risorse cui il progetto fa riferimento, cambiare la posizione di tali risorse &egrave; laborioso.
 
 Nei progetti di VideoPad Video Editor, i percorsi delle risorse linkate sono memorizzati come percorsi assoluti. 
@@ -13,7 +18,7 @@ Ci&ograve; generer&agrave; una serie di errori, che verranno mostrati in un'appo
 
 ![Maschera per risolvere i percorsi delle risorse non trovate](docs/missing-items.png)
 
-***Figura 1. Maschera per l'aggiornamento dei percorsi delle risorse non trovate. Notare, da quanto &egrave; piccola la scrollbar sulla destra, quanti devono essere in questo progetto i files non trovati...***
+***Figura 2. Maschera per l'aggiornamento dei percorsi delle risorse non trovate. Notare, da quanto &egrave; piccola la scrollbar sulla destra, quanti devono essere in questo progetto i files non trovati...***
 
 Agendo sui pulsanti della maschera (bottoni "Risolvi") &egrave; possibile aggiornare il percorso di ogni risorsa ma, soprattutto nei progetti che fanno riferimento a molte risorse (files audio, musica, immagini, spezzoni video etc.), ricaricare ogni singola risorsa nel progetto risulta veramente scocciante.
 Non &egrave; possibile, infatti, specificare solo il percorso ma bisogna puntare alla risorsa specifica e ricaricarla; inoltre, in caso di svista, il software non segnala il problema.
