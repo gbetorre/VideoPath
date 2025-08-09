@@ -6,7 +6,7 @@ VideoPath è una semplice utility per migrare con facilità i riferimenti alle r
 
 VideoPad Video Editor, o VideoPad Professional, &egrave; un'applicazione Windows per l'editing del video digitale con un'interfaccia pulita e facile da utilizzare ma con potenti funzioni di montaggio.
 
-![Esempio di come appare VideoPad](docs/VideoPad interface.png)
+![Esempio di come appare VideoPad](docs/videopad-interface.png)
 
 ***Figure 1. Un esempio di come appare l'interfaccia principale di VideoPad***
 

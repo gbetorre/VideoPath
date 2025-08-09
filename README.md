@@ -9,7 +9,7 @@ This is a simple utility to migrate the VideoPad Video Editor projects from a pa
 Let's start from beginning!<br> 
 VideoPad Video Editor - also known as VideoPad Professional - is a Windows application for digital video editing.
 
-![Sample of VideoPad interface](docs/VideoPad interface.png)
+![Sample of VideoPad interface](docs/videopad-interface.png)
 
 ***Figure 1. An example of how the main interface of VideoPad looks like***
 
