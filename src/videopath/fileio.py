@@ -1,8 +1,9 @@
-# Replace some text in an input file saving changes in an output file
-# Usage example:
-# replace_text_in_file('original.txt', 'modified.txt', 'old_word', 'new_word')
+
 
 import tkinter as tk
+from tkinter import filedialog
+import re
+from urllib.parse import unquote
 
 def browse_and_read_file(text_widget):
     # Open file dialog limited to .vpj files
@@ -32,6 +33,37 @@ def browse_and_read_file(text_widget):
         text_widget.config(state='disabled')
         
 
+def split_path_filename(full_path):
+    # Split by last URL-encoded backslash %5C
+    if '%5C' in full_path:
+        path_part, filename_ext = full_path.rsplit('%5C', 1)  # split once from right
+    else:
+        # no %5C found: treat entire string as filename
+        path_part, filename_ext = '', full_path
+    # Extract file extension from filename
+    if '.' in filename_ext:
+        filename, extension = filename_ext.rsplit('.', 1)
+    else:
+        filename, extension = filename_ext, ''
+
+    return path_part, filename_ext, filename, extension
+
+
+def get_resources(s):
+    p = re.compile(r'path=([^&]+)&creationtime=')
+    matches = p.findall(s)
+    count = 0
+    D = {}
+    for match in matches:
+        count += 1
+        path, filename_ext, filename, extension = split_path_filename(match)
+        D["RISORSA " + str(count)] = [unquote(match), unquote(path), unquote(filename_ext)]
+    return D
+
+
+# Replace some text in an input file saving changes in an output file
+# Usage example:
+# replace_text_in_file('original.txt', 'modified.txt', 'old_word', 'new_word')
 def replace_text_in_file(input_filepath, output_filepath, old_text, new_text):
     with open(input_filepath, 'r', encoding='utf-8') as infile, \
          open(output_filepath, 'w', encoding='utf-8') as outfile:
@@ -41,6 +73,5 @@ def replace_text_in_file(input_filepath, output_filepath, old_text, new_text):
             new_line = line.replace(old_text, new_text)
             outfile.write(new_line)
 
-#old_path = input("Digita il percorso dove VideoPad non trova le risorse: ")
-#print(f"Il vecchio percorso è: {old_path}")
-#new_path = input("Digita il percorso dove si trovano ora le risorse")
+
+#def search(
