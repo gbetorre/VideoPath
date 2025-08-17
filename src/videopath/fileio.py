@@ -31,6 +31,7 @@ def browse_and_read_file(text_widget):
         text_widget.delete('1.0', tk.END)
         text_widget.insert(tk.END, "No file selected.")
         text_widget.config(state='disabled')
+    return content
         
 
 def split_path_filename(full_path):
