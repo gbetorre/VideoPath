@@ -10,14 +10,17 @@ import tkinter.font as tkfont
 
 class VideoPathEditor:
     def __init__(self):
+        self.STEP_1 = "1. Pick a VideoPad Project"
+        self.STEP_2 = "2. Choose the folder where you like to place the resources"
+        self.STEP_3 = "3. Try to migrate references in a new project"
         self.root = tk.Tk()
         self.root.title("VideoPath: VideoPad Projects Editor")
-        self.root.geometry("500x800")
+        self.root.geometry("500x620")
         # Monospaced FONT for text area
         mono_font = tkfont.Font(family="Courier", size=10)
         # LABEL Step 1.
         self.label = tk.Label(self.root,
-                             text="1. Pick a VideoPad Project",
+                             text=self.STEP_1,
                              anchor="w",       		# anchor text to left
                              justify="left",   		# justify multi-line text to left
                              font=("Helvetica", 11, "bold"),
@@ -30,7 +33,7 @@ class VideoPathEditor:
                                      command=self.load_file_content
         )
         self.load_button.pack(pady=10)
-        # Smaller scrollable and read-only TEXTAREA with gray background
+        # TEXTAREA scrollable and read-only with gray background
         self.text_area = scrolledtext.ScrolledText(self.root,
                                                    wrap=tk.NONE,
                                                    width=60,
@@ -39,71 +42,71 @@ class VideoPathEditor:
                                                    bg='#f0f0f0',
                                                    fg='black')
         self.text_area.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
-        
         # Make text widget read-only
         self.text_area.config(state='disabled')
         # LABEL Step 2.
         self.label = tk.Label(self.root,
-                             text="2. Choose the folder where resources are",
+                             text=self.STEP_2,
                              anchor="w",       		# anchor text to left
                              justify="left",   		# justify multi-line text to left
                              font=("Helvetica", 11, "bold"),
                              width=40,         		# label width to see alignment
                              bg="lightgrey")   		# background color to visualize
         self.label.pack(fill="x", padx=10, pady=10) # fill horizontally
-        # Create and place the ENTRY WIDGET to display folder path
+        # ENTRY WIDGET to display folder path
         self.path_entry = tk.Entry(self.root, width=60)
         self.path_entry.pack(padx=10, pady=10)
-        # Create and place the BROWSE BUTTON
+        # BROWSE BUTTON
         self.browse_button = tk.Button(self.root, text="Browse Folder", command=self.browse_folder)
         self.browse_button.pack(pady=5)
         # LABEL Step 3.
         self.label = tk.Label(self.root,
-                             text="3. Try to migrate references in the project",
+                             text=self.STEP_3,
                              anchor="w",       		# anchor text to left
                              justify="left",   		# justify multi-line text to left
                              font=("Helvetica", 11, "bold"),
                              width=40,         		# label width to see alignment
                              bg="lightgrey")   		# background color to visualize
         self.label.pack(fill="x", padx=10, pady=10) # fill horizontally
-
-        # Create a LISTBOX widget with multiple selection mode
-        self.listbox = tk.Listbox(self.root, selectmode=tk.MULTIPLE, width=60, height=10)
-        self.listbox.pack(padx=10, pady=10)
-        # Create a Button widget with a command linked to the method to populate the listbox
+        # LABEL HELP Step 3.
+        self.label = tk.Label(self.root,
+                             text="TIP: If resources are truncated, select them then clic \"Show Selected\"",
+                             anchor="w",       		# anchor text to left
+                             justify="left",   		# justify multi-line text to left
+                             font=("Helvetica", 9),
+                             width=60         		# label width to see alignment
+                             )
+        #self.label.pack_forget()					# Not needed since not placed yet
+        # LISTBOX widget with multiple selection mode
+        frame = tk.Frame(self.root)
+        frame.pack(padx=10, pady=10)
+        self.listbox = tk.Listbox(frame, selectmode=tk.MULTIPLE, width=60, height=8)
+        self.listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        scrollbar = tk.Scrollbar(frame, orient=tk.VERTICAL, command=self.listbox.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.listbox.config(yscrollcommand=scrollbar.set)
+        # BUTTON widget with a command linked to the method to populate the listbox
         self.button = tk.Button(self.root, text="Load resources", command=self.on_button_click)
         self.button.pack(side=tk.LEFT)
-            
-        # Button to select all items
+        # BUTTON to select all items
         btn_select_all = tk.Button(self.root, text="Select All", command=self.select_all)
         btn_select_all.pack(side=tk.LEFT, padx=5)  # Add some horizontal padding
-        # Button to show selected items
+        # BUTTON to de-select all items
+        btn_select_none = tk.Button(self.root, text="Select None", command=self.deselect_all)
+        btn_select_none.pack(side=tk.LEFT, padx=5)  # Add some horizontal padding
+        # BUTTON to show selected items
         btn_show = tk.Button(self.root, text="Show Selected", command=self.show_selected)
+        btn_show.pack(side=tk.LEFT, padx=5)
+        # BUTTON to change paths
+        btn_show = tk.Button(self.root, text="Migrate paths", command=None )
+        btn_show.pack(side=tk.LEFT, padx=5)
+        # BUTTON to save the new VideoPad project
+        btn_show = tk.Button(self.root, text="Save new", command=None )
         btn_show.pack(side=tk.LEFT, padx=5)
 
 
-
     def load_file_content(self):
-        content = browse_and_read_file(self.text_area)
-
-
-    def populate_listbox(self, items):
-        # Clear existing items
-        self.listbox.delete(0, tk.END)
-        # Insert items into the listbox
-        for item in items:
-            self.listbox.insert(tk.END, item)
-    
-    
-    def on_button_click(self):
-        # This function is bound to the button and calls populate_listbox with specific items
-        text_content = self.text_area.get("1.0", "end-1c")
-        if not text_content:
-            messagebox.showwarning("Don't know which VideoPad project", "Select a VideoPad project before")
-            return
-        # Suppose each item is separated by newlines in the text area
-        items_to_add = text_content.splitlines()
-        self.populate_listbox(items_to_add)
+        browse_and_read_file(self.text_area)
 
 
     def browse_folder(self):
@@ -113,6 +116,36 @@ class VideoPathEditor:
             self.path_entry.delete(0, tk.END)
             # Insert the selected folder path into the Entry widget
             self.path_entry.insert(0, folder_path)
+            
+
+    def populate_listbox(self, D):
+        # Clear existing items
+        self.listbox.delete(0, tk.END)
+        # Insert items into the listbox
+        for (key, value) in D.items():
+            self.listbox.insert(tk.END, value[0])
+    
+    
+    def on_button_click(self):
+        # This function is bound to the button and calls populate_listbox with specific items
+        text_project = self.text_area.get("1.0", "end-1c")
+        if not text_project:
+            messagebox.showwarning("Don't know which VideoPad project", f"Select a VideoPad project before\n (See \"{self.STEP_1}\")")
+            return
+        # Place the label at absolute coordinates (x=50, y=100)
+        self.label.place(x=55, y=434)
+        #self.label.pack(fill="x", padx=1, pady=1)  # Show label
+        self.populate_listbox(get_resources(text_project))
+
+
+    def select_all(self):
+        # Select all items in the listbox
+        self.listbox.select_set(0, tk.END)
+        
+        
+    def deselect_all(self):
+        # Deselect all items in the listbox
+        self.listbox.selection_clear(0, tk.END)
 
 
     def show_selected(self):
@@ -123,10 +156,6 @@ class VideoPathEditor:
         # Show selected items
         messagebox.showinfo("Selected Items", "\n".join(selected_items))
 
-
-    def select_all(self):
-        # Select all items in the listbox
-        self.listbox.select_set(0, tk.END)
 
     def run(self):
         self.root.mainloop()
