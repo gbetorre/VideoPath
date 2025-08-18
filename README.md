@@ -1,6 +1,6 @@
 # VideoPath
 
-VideoPad is a nice and simply editor, with powerful features, but when you move the files linked into a project, is very annoying to reload every single file into the project itself!
+VideoPad is a nice and simple editor, with powerful features, but when you move the files linked into a project, is very annoying to reload every single file into the project itself!
 
 This is a simple utility to migrate the VideoPad Video Editor projects from a path to another one.
 
