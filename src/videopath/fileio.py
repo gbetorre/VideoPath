@@ -3,7 +3,7 @@
 import tkinter as tk
 from tkinter import filedialog
 import re
-from urllib.parse import unquote
+from urllib.parse import quote, unquote
 #from pathlib import Path
 
 
@@ -68,13 +68,37 @@ def migrate_resources(old_paths, new_base):
     L = []
     for resource in old_paths:
         # Find the position of the last backslash
-        last_backslash_pos = path.rfind('\\')
+        last_backslash_pos = resource.rfind('\\')
         # Extract the filename part (after the last backslash)
         filename = resource[last_backslash_pos + 1:] if last_backslash_pos != -1 else resource
         # Construct new path by joining new base and everything after new_base + filename
         new_path = new_base + '\\' + filename
         L.append(new_path)
     return L
+
+
+def migrate_project(s, old_paths, new_base):
+    # Prepare a dictionary mapping URL-encoded old paths to URL-encoded new paths
+    path_map = {}
+    for resource in old_paths:
+        filename = resource.split('\\')[-1]  # extract filename
+        new_path = new_base + '\\' + filename
+        old_encoded = quote(resource)
+        new_encoded = quote(new_path)
+        path_map[old_encoded] = new_encoded
+
+    # Regex pattern to find &path=...&creationtime=
+    pattern = re.compile(r'(&path=)([^&]+)(&creationtime=)')
+
+    def replacer(match):
+        prefix, path_encoded, suffix = match.groups()
+        # If this path is in old->new mapping, replace with new encoded path
+        new_path = path_map.get(path_encoded, path_encoded)  # fallback to original if not found
+        return f"{prefix}{new_path}{suffix}"
+
+    # Substitute all matches in the text
+    new_text = pattern.sub(replacer, s)
+    return new_text
 
 
 # Replace some text in an input file saving changes in an output file
