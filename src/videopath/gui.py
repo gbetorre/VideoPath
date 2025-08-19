@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import scrolledtext
 from tkinter import filedialog
-from .fileio import browse_and_read_file, get_resources
+from .fileio import browse_and_read_file, get_resources, migrate_resources, migrate_project
 import tkinter.font as tkfont
 
 
@@ -78,7 +78,7 @@ class VideoPathEditor:
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.listbox.config(yscrollcommand=scrollbar.set)
         # BUTTON widget with a command linked to the method to populate the listbox
-        self.button = tk.Button(self.root, text="Load resources", command=self.on_button_click)
+        self.button = tk.Button(self.root, text="Load Resources", command=self.on_button_click)
         self.button.pack(side=tk.LEFT, padx=5)
         # BUTTON to select all items
         btn_select_all = tk.Button(self.root, text="Select All", command=self.select_all)
@@ -90,10 +90,10 @@ class VideoPathEditor:
         btn_show = tk.Button(self.root, text="Show Selected", command=self.show_selected)
         btn_show.pack(side=tk.LEFT, padx=5)
         # BUTTON to change paths
-        btn_show = tk.Button(self.root, text="Migrate paths", command=None )
+        btn_show = tk.Button(self.root, text="Migrate Paths", command=self.show_migrated)
         btn_show.pack(side=tk.LEFT, padx=5)
         # BUTTON to save the new VideoPad project
-        btn_show = tk.Button(self.root, text="Save new", command=None )
+        btn_show = tk.Button(self.root, text="Save New", command=self.create_new_vpj)
         btn_show.pack(side=tk.LEFT, padx=5)
 
 
@@ -166,10 +166,75 @@ class VideoPathEditor:
         #selected_items_set = set(selected_items)
         # Show selected items
         if not selected_indices:
-            messagebox.showwarning("Selected Items", "You haven't selected anything")
+            messagebox.showwarning("Selected Items", "You haven't selected anything.\n TIP: Select some element in listbox or clic \"Select All\"")
         else:
             messagebox.showinfo("Selected Items", "\n".join(selected_items))
 
+
+    def show_custom_messagebox(self, title, message):
+        top = tk.Toplevel(self.root)
+        top.title(title)
+        top.geometry("800x400")  # Initial window size; can be resized by user
+        top.transient(self.root)
+        top.grab_set()
+        # Create a frame to hold Text widget and scrollbar
+        frame = tk.Frame(top)
+        frame.pack(fill='both', expand=True, padx=10, pady=10)
+        # Create vertical scrollbar
+        scrollbar = tk.Scrollbar(frame)
+        scrollbar.pack(side='right', fill='y')
+        # Create Text widget
+        mono_smaller = tkfont.Font(family="Courier", size=8)
+        text_widget = tk.Text(frame, wrap='word', yscrollcommand=scrollbar.set, font=mono_smaller)
+        text_widget.pack(side='left', fill='both', expand=True)
+        # Insert your long message in text widget
+        text_widget.insert('1.0', message)
+        # Make text widget read-only
+        text_widget.config(state='disabled')
+        # Configure scrollbar
+        scrollbar.config(command=text_widget.yview)
+        # OK button to close the window
+        btn = tk.Button(top, text="OK", command=top.destroy)
+        btn.pack(pady=10)
+        self.root.wait_window(top)
+
+
+    def show_migrated(self):
+        # Get selected indices from listbox
+        selected_indices = self.listbox.curselection()
+        # Get the selected items using indices
+        selected_items = [self.listbox.get(i) for i in selected_indices]
+        # Get the new paths
+        migrated_items = migrate_resources(selected_items, self.path_entry.get().replace('/', '\\'))
+        # Create strings combining each old item and the corresponding migrated item
+        combined = [old + " -> " + new for old, new in zip(selected_items, migrated_items)]
+        # Show items
+        if not selected_indices:
+            messagebox.showwarning("Selected Items", "You haven't selected anything.\n TIP: Select some element in listbox or clic \"Select All\"")
+        else:
+            #messagebox.showinfo("Selected Items", "\n".join(combined))
+            self.show_custom_messagebox("Migrating Items", "\n".join(combined))
+
+
+    def create_new_vpj(self):
+        # Loaded content of vpj project as a string
+        text_project = self.text_area.get("1.0", "end-1c")
+        if not text_project:
+            messagebox.showwarning("Don't know which VideoPad project", f"Select a VideoPad project before\n (See \"{self.STEP_1}\")")
+            return
+
+        # Get selected indices from listbox
+        selected_indices = self.listbox.curselection()
+        # Get the selected items using indices
+        selected_items = [self.listbox.get(i) for i in selected_indices]
+        # Get the new paths
+        migrated_items = migrate_resources(selected_items, self.path_entry.get().replace('/', '\\'))
+
+        new_text = migrate_project(text_project, selected_items, self.path_entry.get().replace('/', '\\'))
+        f = open("new_project.vpj", 'w')
+        f.write(new_text)
+        f.close()
+        
 
     def run(self):
         self.root.mainloop()
