@@ -15,7 +15,7 @@ class VideoPathEditor:
         self.STEP_3 = "3. Try to migrate references in a new project"
         self.root = tk.Tk()
         self.root.title("VideoPath: VideoPad Projects Editor")
-        self.root.geometry("500x620")
+        self.root.geometry("510x620")
         # Monospaced FONT for text area
         mono_font = tkfont.Font(family="Courier", size=10)
         # LABEL Step 1.
@@ -26,7 +26,7 @@ class VideoPathEditor:
                              font=("Helvetica", 11, "bold"),
                              width=40,         		# label width to see alignment
                              bg="lightgrey")   		# background color to visualize
-        self.label.pack(fill="x", padx=10, pady=10)	# fill horizontally
+        self.label.pack(fill="x", padx=10, pady=1)	# fill horizontally
         # BUTTON to browse and open file
         self.load_button = tk.Button(self.root,
                                      text="Select a VideoPad project",
@@ -68,15 +68,7 @@ class VideoPathEditor:
                              width=40,         		# label width to see alignment
                              bg="lightgrey")   		# background color to visualize
         self.label.pack(fill="x", padx=10, pady=10) # fill horizontally
-        # LABEL HELP Step 3.
-        self.label = tk.Label(self.root,
-                             text="TIP: If resources are truncated, select them then clic \"Show Selected\"",
-                             anchor="w",       		# anchor text to left
-                             justify="left",   		# justify multi-line text to left
-                             font=("Helvetica", 9),
-                             width=60         		# label width to see alignment
-                             )
-        #self.label.pack_forget()					# Not needed since not placed yet
+
         # LISTBOX widget with multiple selection mode
         frame = tk.Frame(self.root)
         frame.pack(padx=10, pady=10)
@@ -87,7 +79,7 @@ class VideoPathEditor:
         self.listbox.config(yscrollcommand=scrollbar.set)
         # BUTTON widget with a command linked to the method to populate the listbox
         self.button = tk.Button(self.root, text="Load resources", command=self.on_button_click)
-        self.button.pack(side=tk.LEFT)
+        self.button.pack(side=tk.LEFT, padx=5)
         # BUTTON to select all items
         btn_select_all = tk.Button(self.root, text="Select All", command=self.select_all)
         btn_select_all.pack(side=tk.LEFT, padx=5)  # Add some horizontal padding
@@ -106,7 +98,16 @@ class VideoPathEditor:
 
 
     def load_file_content(self):
-        browse_and_read_file(self.text_area)
+        vpj_project = browse_and_read_file(self.text_area)
+        # SHOW PATH AND NAME OF SELECTED vpj PROJECT
+        self.label = tk.Label(self.root,
+                             text=vpj_project,
+                             anchor="w",       		# anchor text to left
+                             justify="left",   		# justify multi-line text to left
+                             font=("Consolas", 8),
+                             width=78,         		# label width to see alignment
+                             bg="lightyellow")   	# background color to visualize
+        self.label.place(x=10, y=60)
 
 
     def browse_folder(self):
@@ -132,6 +133,14 @@ class VideoPathEditor:
         if not text_project:
             messagebox.showwarning("Don't know which VideoPad project", f"Select a VideoPad project before\n (See \"{self.STEP_1}\")")
             return
+        # LABEL HELP Step 3.
+        self.label = tk.Label(self.root,
+                             text="TIP: If resources are truncated, select them then clic \"Show Selected\"",
+                             anchor="w",       		# anchor text to left
+                             justify="left",   		# justify multi-line text to left
+                             font=("Helvetica", 9),
+                             width=60         		# label width to see alignment
+                             )
         # Place the label at absolute coordinates (x=50, y=100)
         self.label.place(x=55, y=434)
         #self.label.pack(fill="x", padx=1, pady=1)  # Show label
@@ -153,8 +162,13 @@ class VideoPathEditor:
         selected_indices = self.listbox.curselection()
         # Get the selected items using indices
         selected_items = [self.listbox.get(i) for i in selected_indices]
+        # Make a set from list to avoid duplicates
+        #selected_items_set = set(selected_items)
         # Show selected items
-        messagebox.showinfo("Selected Items", "\n".join(selected_items))
+        if not selected_indices:
+            messagebox.showwarning("Selected Items", "You haven't selected anything")
+        else:
+            messagebox.showinfo("Selected Items", "\n".join(selected_items))
 
 
     def run(self):
