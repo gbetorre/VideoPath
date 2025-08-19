@@ -4,6 +4,8 @@ import tkinter as tk
 from tkinter import filedialog
 import re
 from urllib.parse import unquote
+#from pathlib import Path
+
 
 def browse_and_read_file(text_widget):
     # Open file dialog limited to .vpj files
@@ -31,7 +33,8 @@ def browse_and_read_file(text_widget):
         text_widget.delete('1.0', tk.END)
         text_widget.insert(tk.END, "No file selected.")
         text_widget.config(state='disabled')
-        
+    return vpj_file_path
+
 
 def split_path_filename(full_path):
     # Split by last URL-encoded backslash %5C
@@ -59,6 +62,19 @@ def get_resources(s):
         path, filename_ext, filename, extension = split_path_filename(match)
         D["RISORSA " + str(count)] = [unquote(match), unquote(path), unquote(filename_ext)]
     return D
+
+
+def migrate_resources(old_paths, new_base):
+    L = []
+    for resource in old_paths:
+        # Find the position of the last backslash
+        last_backslash_pos = path.rfind('\\')
+        # Extract the filename part (after the last backslash)
+        filename = resource[last_backslash_pos + 1:] if last_backslash_pos != -1 else resource
+        # Construct new path by joining new base and everything after new_base + filename
+        new_path = new_base + '\\' + filename
+        L.append(new_path)
+    return L
 
 
 # Replace some text in an input file saving changes in an output file
